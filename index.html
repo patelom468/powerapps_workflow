@@ -772,6 +772,60 @@ body.c-click #cursor-ring { width:24px; height:24px; }
 </footer>
 
 <script>
+
+  /* ════════════════════════════════════════════════════════
+   1. CUSTOM CURSOR
+   dot = snaps to exact mouse position every frame
+   ring = lerps (smoothly follows) behind the dot
+   Both react to [data-cur] attributes on elements.
+════════════════════════════════════════════════════════ */
+var dot  = document.getElementById('cursor-dot');
+var ring = document.getElementById('cursor-ring');
+var mx=window.innerWidth/2, my=window.innerHeight/2;
+var rx=mx, ry=my;
+var curVisible = false;
+
+document.addEventListener('mousemove', function(e){
+  mx = e.clientX; my = e.clientY;
+  if(!curVisible){ curVisible=true; document.body.classList.add('c-vis'); }
+  /* Dot snaps instantly via CSS left/top */
+  dot.style.left  = mx+'px';
+  dot.style.top   = my+'px';
+});
+
+/* Smooth ring lerp on RAF */
+(function lerp(){
+  var L = 0.10;
+  rx += (mx-rx)*L;
+  ry += (my-ry)*L;
+  ring.style.left = rx.toFixed(1)+'px';
+  ring.style.top  = ry.toFixed(1)+'px';
+  requestAnimationFrame(lerp);
+})();
+
+/* Hover/text detection via data-cur attribute */
+document.addEventListener('mouseover', function(e){
+  var el = e.target && e.target.closest ? e.target.closest('[data-cur]') : null;
+  document.body.classList.remove('c-hover','c-text');
+  if(!el) return;
+  if(el.dataset.cur==='hover') document.body.classList.add('c-hover');
+  if(el.dataset.cur==='text')  document.body.classList.add('c-text');
+});
+document.addEventListener('mouseout', function(e){
+  var to = e.relatedTarget;
+  if(!to || !(to.closest && to.closest('[data-cur]'))){
+    document.body.classList.remove('c-hover','c-text');
+  }
+});
+document.addEventListener('mousedown', function(){ document.body.classList.add('c-click'); });
+document.addEventListener('mouseup',   function(){ document.body.classList.remove('c-click'); });
+document.addEventListener('mouseleave',function(){
+  dot.style.opacity='0'; ring.style.opacity='0';
+});
+document.addEventListener('mouseenter',function(){
+  if(curVisible){ dot.style.opacity='1'; ring.style.opacity='1'; }
+});
+
 // Nav scroll shrink
 window.addEventListener('scroll', () => {
   document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60)
