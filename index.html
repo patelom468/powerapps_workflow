@@ -338,6 +338,28 @@ footer a:hover { text-decoration: underline; }
   .metrics { grid-template-columns: 1fr 1fr; }
   .hero-ctas { flex-direction: column; }
 }
+
+  /* ── CUSTOM CURSOR ── */
+#cursor-dot {
+  position:fixed; width:6px; height:6px; background:#fff; border-radius:50%;
+  pointer-events:none; z-index:9999; transform:translate(-50%,-50%);
+  transition: width .2s, height .2s, background .2s, opacity .3s;
+  will-change:transform; opacity:0;
+}
+#cursor-ring {
+  position:fixed; width:36px; height:36px; border:1.5px solid rgba(108,99,255,.75);
+  border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%);
+  transition: width .35s cubic-bezier(.25,.46,.45,.94), height .35s cubic-bezier(.25,.46,.45,.94),
+    border-color .3s, background .35s, opacity .3s;
+  will-change:transform; opacity:0;
+}
+body.c-vis #cursor-dot, body.c-vis #cursor-ring { opacity:1; }
+body.c-hover #cursor-dot { width:4px; height:4px; background:var(--accent2); }
+body.c-hover #cursor-ring { width:56px; height:56px; border-color:rgba(0,229,176,.35); background:rgba(108,99,255,.07); }
+body.c-text #cursor-ring  { width:3px; height:44px; border-radius:2px; border-color:var(--accent2); }
+body.c-click #cursor-dot  { width:10px; height:10px; background:var(--accent); }
+body.c-click #cursor-ring { width:24px; height:24px; }
+
 </style>
 </head>
 <body>
